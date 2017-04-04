@@ -1,0 +1,17 @@
+Package: rabarbRa
+Type: Package
+Version: 0.0.1
+Authors@R: person("Jean-Marie", "Lepioufle", , "jm@nexmodeling.com", c("aut","cre"),
+           person("nexModeling", role = "cph"))
+Title: rabarbRa
+Description: List and manipulate information of remote services
+  The package focuses on listing and manipulating information of remote services.
+  Files are created in order to be share wit other users.
+Depends:
+    R (>= 3.2.5)
+Imports:
+   jsonlite
+License: GPL-3
+Encoding: UTF-8
+LazyData: false
+RoxygenNote: 5.0.1
