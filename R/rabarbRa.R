@@ -23,6 +23,7 @@ rabarbRa_object <- function(){
         df_rab <<- jsonlite::fromJSON(filename)
       } else if (!is.null(df)){
         stopifnot(inherits(df,"data.frame"))
+        df_rab <<- df
       } else df_rab <<- NULL
       invisible()
     }
