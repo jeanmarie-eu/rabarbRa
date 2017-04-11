@@ -73,6 +73,10 @@ rabarbRa_object <- function(){
         stop("format not recognized: ", format))
     }
 
+    summary <- function(){
+        return(head(df_rab,n=3L))
+    }
+
     #UPDATE
     #JOIN
     #GROUPBY: aggregate
