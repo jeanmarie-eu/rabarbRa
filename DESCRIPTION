@@ -1,6 +1,6 @@
 Package: rabarbRa
 Type: Package
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person("Jean-Marie", "Lepioufle", , "jm@nexmodeling.com", c("aut","cre"),
            person("nexModeling", role = "cph"))
 Title: rabarbRa
@@ -10,7 +10,9 @@ Description: List and manipulate information of remote services
 Depends:
     R (>= 3.2.5)
 Imports:
-   jsonlite
+   tools,
+   jsonlite,
+   lazyeval
 License: GPL-3
 Encoding: UTF-8
 LazyData: false

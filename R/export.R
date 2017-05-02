@@ -11,3 +11,10 @@ export.rda <- function(df, filename){
     invisible()
   } else return(df)
 }
+
+export.csv <- function(df, filename){
+  if (!is.null(filename)) {
+    write.csv(df,filename)
+    invisible()
+  } else return(df)
+}
