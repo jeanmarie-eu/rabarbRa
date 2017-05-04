@@ -96,14 +96,6 @@ rabarbRa_object <- function(){
       return(indice_select)
     }
 
-    delete <- function(i=NULL,j=NULL){
-      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
-        delete_(df_rab,i=indice_select$i,j=indice_select$j)
-      } else delete_(df_rab,i=i,j=j)
-      on.exit(indice_select <<- list(i=NULL,j=NULL))
-      invisible()
-    }
-
     values <- function(i=NULL,j=NULL) {
       if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
         on.exit(indice_select <<- list(i=NULL,j=NULL))
@@ -118,14 +110,33 @@ rabarbRa_object <- function(){
     modify <- function(i=NULL,j=NULL,value) {
       if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
         modify_(df=df_rab,i=indice_select$i,j=indice_select$j) <- value
-        df_rab <<-df_rab
       } else {
         modify_(df=df_rab,i=i,j=j) <- value
-        df_rab <<-df_rab
       }
+      df_rab <<-df_rab
       on.exit(indice_select <<- list(i=NULL,j=NULL))
       invisible()
     }
+
+    delete <- function(i=NULL,j=NULL){
+      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
+        if (is.null(indice_select$i)) {
+           modify_(df_rab) <- df_rab[,-indice_select$j]
+        } else if (is.null(indice_select$j)) {
+           modify_(df_rab) <- df_rab[-indice_select$i,]
+        } else modify_(df_rab) <- df_rab[-indice_select$i,-indice_select$j]
+      } else if ( (!is.null(i)) || (!is.null(j)) ) {
+        if (is.null(i)) {
+           modify_(df_rab) <- df_rab[,-j]
+        } else if (is.null(j)) {
+           modify_(df_rab) <- df_rab[-i,]
+        } else modify_(df_rab) <- df_rab[-i,-j]
+      }
+      df_rab <<-df_rab
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      #invisible()
+    }
+
 
 
     ################
