@@ -34,3 +34,17 @@ queries <- function(...,logic=NULL){
   lapply(res$q,function(x)stopifnot(inherits(x,"query")))
   structure(res, class=c("queries", class(res)))
 }
+
+
+
+q_field <- function(q){
+  return(q$field)
+}
+
+q_fun_sign <- function(q){
+  return(q$fun_sign)
+}
+
+q_value <- function(q){
+  return(q$value)
+}
