@@ -134,7 +134,7 @@ rabarbRa_object <- function(){
       }
       df_rab <<-df_rab
       on.exit(indice_select <<- list(i=NULL,j=NULL))
-      #invisible()
+      invisible()
     }
 
 
