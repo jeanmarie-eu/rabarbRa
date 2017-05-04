@@ -15,8 +15,13 @@ rabarbRa <- function(){
 rabarbRa_object <- function(){
 
   df_rab <- NULL
+  indice_select <- list(i=NULL,j=NULL)
 
   object <- local({
+
+    ##########
+    # Basics #
+    ##########
 
     import <- function(df=NULL,filename=NULL){
       if (!is.null(filename)) {
@@ -30,6 +35,14 @@ rabarbRa_object <- function(){
         df_rab <<- df
       } else df_rab <<- NULL
       invisible()
+    }
+
+    export <-function(filename=NULL,format="json"){
+      switch(format,
+        "json" = export.json(df=df_rab,filename=filename),
+        "csv"  = export.csv(df=df_rab,filename=filename),
+        "rda"  = export.rda(df=df_rab,filename=filename),
+        stop("format not recognized: ", format))
     }
 
     create <- function(names_array=NULL){
@@ -47,45 +60,8 @@ rabarbRa_object <- function(){
         stopifnot(inherits(tmp,"data.frame"))
         stopifnot(names(tmp)==names(df_rab))
         df_rab <<- rbind(df_rab,tmp)
-      } else stop("Create a new listing first: new()")
+      } else stop("Create a new listing first: $create()")
       invisible()
-    }
-
-    delete <- function(query=NULL,i=NULL,j=NULL){
-      if (!is.null(query)) {
-         i <- select_(df=df_rab,query)
-         df_rab <<- df_rab[-i,]
-      } else if ((!is.null(i)) && (!is.null(j))) {
-        df_rab <<- df_rab[-i,-j]
-      } else if ((!is.null(i)) && (is.null(j))) {
-        df_rab <<- df_rab[-i,]
-      } else if ((is.null(i)) && (!is.null(j))) {
-        df_rab <<- df_rab[,-j]
-      }
-      invisible()
-    }
-
-    select <- function(query) {
-      return(select_(df=df_rab,query))
-    }
-
-    values <- function(query=NULL,field=NULL,i=NULL,j=NULL) {
-      if ((!is.null(query))) {
-        indice <- select_(df=df_rab,query)
-        return(value(df=df_rab,indice=indice,field=field))
-      } else if ( (is.null(query)) && (!is.null(field))) {
-        return(value(df=df_rab,field=field))
-      } else if ((is.null(query)) && (is.null(field))) {
-        return(value(df=df_rab,indice=i,field=j))
-      }
-    }
-
-    export <-function(filename=NULL,format="json"){
-      switch(format,
-        "json" = export.json(df=df_rab,filename=filename),
-        "csv"  = export.csv(df=df_rab,filename=filename),
-        "rda"  = export.rda(df=df_rab,filename=filename),
-        stop("format not recognized: ", format))
     }
 
     summary <- function(){
@@ -93,7 +69,64 @@ rabarbRa_object <- function(){
                      dim = dim(df_rab)))
     }
 
-    ##########
+
+    ################
+    # Manipulation #
+    ################
+
+    select <- function(query=NULL,field=NULL) {
+      if (!is.null(query)){
+         indice_select$i <<- select_(df=df_rab,query)
+      }
+      if (!is.null(field)){
+         indice_select$j <<- which((names(df_rab) == field))
+      }
+      if (identical(indice_select$i,integer(0)) ) {
+        indice_select$i <<- NULL
+        message("query provided integer(0), kept to NULL")
+      }
+      if (identical(indice_select$j,integer(0)) ) {
+        indice_select$j <<- NULL
+        message("fields provided integer(0), kept to NULL")
+      }
+      invisible()
+    }
+
+    delete <- function(i=NULL,j=NULL){
+      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
+        delete_(df_rab,i=indice_select$i,j=indice_select$i)
+      } else delete_(df_rab,i=i,j=j)
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      invisible()
+    }
+
+    values <- function(i=NULL,j=NULL) {
+      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
+        on.exit(indice_select <<- list(i=NULL,j=NULL))
+        return(value_(df_rab,i=indice_select$i,j=indice_select$i))
+      } else {
+        on.exit(indice_select <<- list(i=NULL,j=NULL))
+        return(value_(df_rab,i=i,j=j))
+      }
+
+    }
+
+    modify <- function(i=NULL,j=NULL,value) {
+      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
+        modify_(df=df_rab,i=indice_select$i,j=indice_select$j) <- value
+        df_rab <<-df_rab
+      } else {
+        modify_(df=df_rab,i=i,j=j) <- value
+        df_rab <<-df_rab
+      }
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      invisible()
+    }
+
+
+    ################
+    # Evaluation   #
+    ################
 
     expression <- function(...){
        return(eval_expr(df=df_rab,...))
@@ -106,10 +139,6 @@ rabarbRa_object <- function(){
     na <- function(dim){
       return(nas(df=df_rab,dim))
     }
-
-    #UPDATE
-    #JOIN
-    #GROUPBY: aggregate
 
     environment()
     })
