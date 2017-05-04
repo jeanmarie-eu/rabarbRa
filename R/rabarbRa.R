@@ -107,7 +107,7 @@ rabarbRa_object <- function(){
     values <- function(i=NULL,j=NULL) {
       if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
         on.exit(indice_select <<- list(i=NULL,j=NULL))
-        return(value_(df_rab,i=indice_select$i,j=indice_select$i))
+        return(value_(df_rab,i=indice_select$i,j=indice_select$j))
       } else {
         on.exit(indice_select <<- list(i=NULL,j=NULL))
         return(value_(df_rab,i=i,j=j))
