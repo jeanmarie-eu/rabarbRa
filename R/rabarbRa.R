@@ -92,6 +92,10 @@ rabarbRa_object <- function(){
       invisible()
     }
 
+    getselect <- function() {
+      return(indice_select)
+    }
+
     delete <- function(i=NULL,j=NULL){
       if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
         delete_(df_rab,i=indice_select$i,j=indice_select$i)
