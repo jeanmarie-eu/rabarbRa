@@ -33,7 +33,7 @@ rabarbRa_object <- function(){
       } else if (!is.null(df)){
         stopifnot(inherits(df,"data.frame"))
         df_rab <<- df
-      } else df_rab <<- NULL
+      } else stop("need arguments. ")
       invisible()
     }
 
@@ -50,7 +50,7 @@ rabarbRa_object <- function(){
         if (!is.null(names_array)) {
            df_rab <<- data.frame(matrix("NULL", 0, length(names_array),dimnames=list(c(), names_array)),stringsAsFactors=F)
         } else stop("Names of columns are needed")
-      } else stop(" A listing is already existing. Create a new rabarbRa first.")
+      } else stop(" A listing is already existing. Create a new rabarbRa object first.")
       invisible()
     }
 
@@ -65,14 +65,14 @@ rabarbRa_object <- function(){
     }
 
     summary <- function(){
-        return(list(colname = colnames(df_rab),
+        return(list(colname = names(df_rab),
                      dim = dim(df_rab)))
     }
 
 
-    ################
-    # Manipulation #
-    ################
+    #######################
+    # Values Manipulation #
+    #######################
 
     select <- function(query=NULL,field=NULL) {
       if (!is.null(query)){
@@ -104,8 +104,7 @@ rabarbRa_object <- function(){
         on.exit(indice_select <<- list(i=NULL,j=NULL))
         return(value_(df_rab,i=i,j=j))
       }
-
-    }
+	  }
 
     modify <- function(i=NULL,j=NULL,value) {
       if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
@@ -117,26 +116,6 @@ rabarbRa_object <- function(){
       on.exit(indice_select <<- list(i=NULL,j=NULL))
       invisible()
     }
-
-    delete <- function(i=NULL,j=NULL){
-      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
-        if (is.null(indice_select$i)) {
-           modify_(df_rab) <- df_rab[,-indice_select$j]
-        } else if (is.null(indice_select$j)) {
-           modify_(df_rab) <- df_rab[-indice_select$i,]
-        } else modify_(df_rab) <- df_rab[-indice_select$i,-indice_select$j]
-      } else if ( (!is.null(i)) || (!is.null(j)) ) {
-        if (is.null(i)) {
-           modify_(df_rab) <- df_rab[,-j]
-        } else if (is.null(j)) {
-           modify_(df_rab) <- df_rab[-i,]
-        } else modify_(df_rab) <- df_rab[-i,-j]
-      }
-      df_rab <<-df_rab
-      on.exit(indice_select <<- list(i=NULL,j=NULL))
-      invisible()
-    }
-
 
 
     ################
