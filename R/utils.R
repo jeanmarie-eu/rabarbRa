@@ -1,7 +1,4 @@
-#' @export
-print.rabarbRa <- function(x,...){
-  str(x$summary())
-}
+
 
 #' @importFrom lazyeval f_eval
 lazyeval::f_eval
