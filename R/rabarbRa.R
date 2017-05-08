@@ -8,7 +8,7 @@
 #' rabarbRa()
 #' }
 rabarbRa <- function(){
-  #let possibilities for connections
+  #let possibilities for connections options, handles, ...
   rabarbRa_object()
 }
 
@@ -23,16 +23,11 @@ rabarbRa_object <- function(){
     # Basics #
     ##########
 
-    import <- function(df=NULL,filename=NULL){
-      if (!is.null(filename)) {
-        ext <- tools::file_ext(filename)
-        df_rab <<- switch(ext,
-          "json" = jsonlite::fromJSON(filename),
-          "csv"  = read.csv(filename,header=TRUE),
-          stop("extension not recognized: ", ext))
-      } else if (!is.null(df)){
-        stopifnot(inherits(df,"data.frame"))
+    import <- function(df=NULL,filename=NULL,url=NULL){
+      if (!is.null(df)) {
         df_rab <<- df
+      } else if ( !is.null(filename) || !is.null(url) ){
+        df_rab <<- import_(filename=filename,url=url)
       } else stop("need arguments. ")
       invisible()
     }
@@ -45,25 +40,6 @@ rabarbRa_object <- function(){
         stop("format not recognized: ", format))
     }
 
-    create <- function(names_array=NULL){
-      if (is.null(df_rab)) {
-        if (!is.null(names_array)) {
-           df_rab <<- data.frame(matrix("NULL", 0, length(names_array),dimnames=list(c(), names_array)),stringsAsFactors=F)
-        } else stop("Names of columns are needed")
-      } else stop(" A listing is already existing. Create a new rabarbRa object first.")
-      invisible()
-    }
-
-    insert <- function(...){
-      if (!is.null(df_rab)) {
-        tmp <- data.frame(...,stringsAsFactors=F)
-        stopifnot(inherits(tmp,"data.frame"))
-        stopifnot(names(tmp)==names(df_rab))
-        df_rab <<- rbind(df_rab,tmp)
-      } else stop("Create a new listing first: $create()")
-      invisible()
-    }
-
     summary <- function(){
         return(list(colname = names(df_rab),
                      dim = dim(df_rab)))
@@ -74,12 +50,12 @@ rabarbRa_object <- function(){
     # Values Manipulation #
     #######################
 
-    select <- function(query=NULL,field=NULL) {
+    select <- function(query=NULL,variable=NULL) {
       if (!is.null(query)){
-         indice_select$i <<- select_(df=df_rab,query)
+         indice_select$i <<- select_row_(df=df_rab,query)
       }
-      if (!is.null(field)){
-         indice_select$j <<- which((names(df_rab) == field))
+      if (!is.null(variable)){
+         indice_select$j <<- select_var_(df_rab,variable)
       }
       if (identical(indice_select$i,integer(0)) ) {
         indice_select$i <<- NULL
@@ -87,7 +63,7 @@ rabarbRa_object <- function(){
       }
       if (identical(indice_select$j,integer(0)) ) {
         indice_select$j <<- NULL
-        message("fields provided integer(0), kept to NULL")
+        message("variables provided integer(0), kept to NULL")
       }
       invisible()
     }
@@ -97,13 +73,8 @@ rabarbRa_object <- function(){
     }
 
     values <- function(i=NULL,j=NULL) {
-      if ( (!is.null(indice_select$i)) || (!is.null(indice_select$j)) ) {
-        on.exit(indice_select <<- list(i=NULL,j=NULL))
-        return(value_(df_rab,i=indice_select$i,j=indice_select$j))
-      } else {
-        on.exit(indice_select <<- list(i=NULL,j=NULL))
-        return(value_(df_rab,i=i,j=j))
-      }
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      return(value_(df_rab,indice_select=indice_select,i=i,j=j))
 	  }
 
     modify <- function(i=NULL,j=NULL,value) {
@@ -123,15 +94,17 @@ rabarbRa_object <- function(){
     ################
 
     expression <- function(...){
-       return(eval_expr(df=df_rab,...))
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      return(eval_expr(df=value_(df_rab,indice_select=indice_select),...))
     }
 
     process <- function(FUN,...){
-      return(FUN(df_rab,...))
+      on.exit(indice_select <<- list(i=NULL,j=NULL))
+      return(FUN(value_(df_rab,indice_select=indice_select),...))
     }
 
     na <- function(dim){
-      return(nas(df=df_rab,dim))
+      return(nas(df=value_(df_rab,indice_select=indice_select),dim))
     }
 
     environment()
