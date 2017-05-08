@@ -49,6 +49,11 @@ rabarbRa_object <- function(){
     #######################
     # Values Manipulation #
     #######################
+    indice <- function(i=NULL,j=NULL){
+      if (!is.null(i)) indice_select$i <<-i
+      if (!is.null(j)) indice_select$j <<-j
+      invisible()
+    }
 
     select <- function(query=NULL,variable=NULL) {
       if (!is.null(query)){
