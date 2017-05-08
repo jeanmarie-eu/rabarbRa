@@ -1,7 +1,7 @@
 #' query
 #'
 #' query
-#' @param field field
+#' @param variable variable
 #' @param fun_sign fun_sign
 #' @param value value
 #' @keywords rabarbRa
@@ -10,8 +10,8 @@
 #' \dontrun{
 #' query()
 #' }
-query <- function(field,fun_sign,value){
-  res <- list(field    = field,
+query <- function(variable,fun_sign,value){
+  res <- list(variable = variable,
               fun_sign = fun_sign,
               value    = value)
   structure(res, class=c("query", class(res)))
@@ -37,8 +37,8 @@ queries <- function(...,logic=NULL){
 
 
 
-q_field <- function(q){
-  return(q$field)
+q_variable <- function(q){
+  return(q$variable)
 }
 
 q_fun_sign <- function(q){
