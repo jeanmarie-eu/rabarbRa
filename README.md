@@ -20,42 +20,72 @@ devtools::install_github("jeanmarielepioufle/rabarbRa")
 ```R
 library(rabarbRa)
 
-services <- rabarbRa()
 
-# basics
-services$create(names_array = c("service","version","format","auth_type","endpoint"))
-services$insert(service="metno_radarnowcasting",version="mos.pcappi",format="netcdf",auth_type="none",endpoint="none")
-services$insert(service="metno_radarnowcasting",version="gridpp",format="netcdf",auth_type="none",endpoint="none")
-services$insert(service="metno_senorge",version="2.0",format="netcdf",auth_type="none",endpoint="none")
-services$insert(service="metno_senorge",version="2.1",format="netcdf",auth_type="none",endpoint="none")
-services$export("~\\x.json",format="json")
-services$import(filename="~\\x.json")
+##########
+# BASICS #
+##########
 
-services$values(j=1)
-services$values(i=2,j=1)
-services$values()
-services$delete(j=4)
+ci <- rabarbRa()
 
-# queries
-req1 <- query(field="service",fun_sign="==",value="metno_senorge")
-q <- queries(req1)
-services$select(query=q, field="format")
-services$modify(value="geotiff")
-services$values()
+# import
+#https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv
+ci$import(url="https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv",filename=NULL)
 
-req2 <- query(field="version",fun_sign="==",value="2.1")
-q <- queries(req1,req2,logic="OR")
-services$select(query=q)
-services$values()
+# manipulation
+str(ci[])
+names(ci)
+levels(ci[,2])
+levels(ci[,2])<-c("A","B")
+dim(ci)
+length(ci[,1])
 
+ci[1,"tenure"]
+ci[1,"tenure"] <- 100
+ci[1,"tenure"]
+ci[1,] <- ci[2,]
 
-# process a function on the whole data.frame
-services$process(dim)
+# WARNING:
+# Keep the brackets in order to manipulate the intern data.frame
+ci[] <- ci[-1,]
+class(ci)
+dim(ci)
 
-# process an expression in-between columns of the data.frame
-contingency <- services$expression(~table(service,version))
+# ... OR you will destroy ci, and only keep the data.frame
+# ci <- ci[-1,]
+# class(ci) # data.frame
 
-services
+#############
+# SELECTION #
+#############
+
+# variable selection
+# the selection is reset after every action (get values, process formula, ...etc)
+select_var(ci,"tenure")
+ci[]
+
+select_var(ci,c("tenure","Contract"))
+ci[1:10]
+
+# row selection
+req <- query(variable="InternetService",fun_sign="==",value="No")
+q <- queries(req)
+select_row(ci,q)
+select_var(ci,"tenure")
+ci[]
+
+##############
+# EXPRESSION #
+##############
+contingency <- ci$expression(~table(Churn,tenure,Contract,InternetService))
+contingency[1,1,,]
+
+# simple example
+tmp <- ci$expression(~glm(Churn ~ tenure + PhoneService + PaymentMethod + MonthlyCharges + TotalCharges,family=binomial(link="logit")))
+
+##############
+# SAMPLES    #
+##############
+sample_n(ci,n=10)
 
 ```
 I am working on making vignettes.
