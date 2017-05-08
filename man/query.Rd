@@ -4,10 +4,10 @@
 \alias{query}
 \title{query}
 \usage{
-query(field, fun_sign, value)
+query(variable, fun_sign, value)
 }
 \arguments{
-\item{field}{field}
+\item{variable}{variable}
 
 \item{fun_sign}{fun_sign}
 

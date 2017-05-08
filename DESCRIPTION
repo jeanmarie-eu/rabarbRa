@@ -12,7 +12,8 @@ Depends:
 Imports:
    tools,
    jsonlite,
-   lazyeval
+   lazyeval,
+   curl
 License: GPL-3
 Encoding: UTF-8
 LazyData: false
