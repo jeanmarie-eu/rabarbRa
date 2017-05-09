@@ -22,6 +22,8 @@ rabarbRa_object <- function(df,filename,url){
     df_rab <- df
   } else if ( !is.null(filename) || !is.null(url) ){
     df_rab <- import_(filename=filename,url=url)
+  } else if (!is.null(df)) {
+    df_rab <- df
   } else stop("need arguments. ")
 
   indice_select <- list(i=NULL,j=NULL)
