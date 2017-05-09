@@ -4,7 +4,14 @@
 \alias{rabarbRa}
 \title{rabarbRa}
 \usage{
-rabarbRa()
+rabarbRa(df = NULL, filename = NULL, url = NULL)
+}
+\arguments{
+\item{df}{data.frame}
+
+\item{filename}{filename}
+
+\item{url}{url}
 }
 \description{
 rabarbRa
