@@ -4,9 +4,12 @@
 
 The R-package gathers functions and a object to quickly manipulate data.frame and related files (json,...).
 
-The package has two purposes:
+The package has three purposes:
 1. Easily and quickly manipulate data.frames and related files.
 2. Identify processes that are memory and cpu eaters for further improvements.
+3. Developing solution to 2.
+
+The package is under active development. Its code and syntax might change greatly.
 
 ## Installation
 
@@ -25,15 +28,12 @@ library(rabarbRa)
 # BASICS #
 ##########
 
-ci <- rabarbRa()
-
-# import
-#https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv
-ci$import(url="https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv",filename=NULL)
+# https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv
+ci <- rabarbRa(url="https://community.watsonanalytics.com/wp-content/uploads/2015/03/WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
 # manipulation
 str(ci[])
-names(ci)
+names(ci[])
 levels(ci[,2])
 levels(ci[,2])<-c("A","B")
 dim(ci)
