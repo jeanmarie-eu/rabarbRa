@@ -1,20 +1,29 @@
 #' rabarbRa
 #'
 #' rabarbRa
+#' @param df data.frame
+#' @param filename filename
+#' @param url url
 #' @keywords rabarbRa
 #' @export
 #' @examples
 #' \dontrun{
 #' rabarbRa()
 #' }
-rabarbRa <- function(){
-  #let possibilities for connections options, handles, ...
-  rabarbRa_object()
+rabarbRa <- function(df=NULL,filename=NULL,url=NULL){
+
+  rabarbRa_object(df=df,filename=filename,url=url)
 }
 
-rabarbRa_object <- function(){
+rabarbRa_object <- function(df,filename,url){
 
   df_rab <- NULL
+  if (!is.null(df)) {
+    df_rab <- df
+  } else if ( !is.null(filename) || !is.null(url) ){
+    df_rab <- import_(filename=filename,url=url)
+  } else stop("need arguments. ")
+
   indice_select <- list(i=NULL,j=NULL)
 
   object <- local({
@@ -22,15 +31,6 @@ rabarbRa_object <- function(){
     ##########
     # Basics #
     ##########
-
-    import <- function(df=NULL,filename=NULL,url=NULL){
-      if (!is.null(df)) {
-        df_rab <<- df
-      } else if ( !is.null(filename) || !is.null(url) ){
-        df_rab <<- import_(filename=filename,url=url)
-      } else stop("need arguments. ")
-      invisible()
-    }
 
     export <-function(filename=NULL,format="json"){
       switch(format,
@@ -41,8 +41,9 @@ rabarbRa_object <- function(){
     }
 
     summary <- function(){
-        return(list(colname = names(df_rab),
-                     dim = dim(df_rab)))
+        return(
+          list(colname = names(df_rab),
+               dim     = dim(df_rab)))
     }
 
 
@@ -53,6 +54,10 @@ rabarbRa_object <- function(){
       if (!is.null(i)) indice_select$i <<-i
       if (!is.null(j)) indice_select$j <<-j
       invisible()
+    }
+
+    getindice <- function() {
+      return(indice_select)
     }
 
     select <- function(query=NULL,variable=NULL) {
@@ -73,9 +78,6 @@ rabarbRa_object <- function(){
       invisible()
     }
 
-    getselect <- function() {
-      return(indice_select)
-    }
 
     values <- function(i=NULL,j=NULL) {
       on.exit(indice_select <<- list(i=NULL,j=NULL))
