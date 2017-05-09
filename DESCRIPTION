@@ -1,12 +1,14 @@
 Package: rabarbRa
 Type: Package
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: person("Jean-Marie", "Lepioufle", , "jm@nexmodeling.com", c("aut","cre"),
            person("nexModeling", role = "cph"))
 Title: rabarbRa
-Description: List and manipulate information of remote services
-  The package focuses on listing and manipulating information of remote services.
-  Files are created in order to be share wit other users.
+Description: Quickly manipulate data.frame and related files (json, csv, ...).
+   The package focuses on:
+   1. Easily and quickly manipulate data.frames and related files.
+   2. Identify processes that are memory and cpu eaters for further improvements.
+   3. Developing solution to 2.
 Depends:
     R (>= 3.2.5)
 Imports:
