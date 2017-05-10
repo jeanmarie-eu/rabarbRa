@@ -12,7 +12,7 @@
 #' }
 select <- function(x,subset,variable){
   if(inherits(x,"rabarbRa")){
-    x$select(subset,variable)
+    x$select(subset=subset,variable=variable)
   } else stop("Need to be a rabarbRa object")
 }
 
@@ -25,8 +25,14 @@ select <- function(x,subset,variable){
 # Objectives: low RAM, fast computing
 
 select_ <- function(df,subset,variable){
-  return(list(i = select_i(df=df,subset),
-              j = select_j(df=df,variable)))
+  res <-list(i=NULL,j=NULL)
+  if (!missing(subset)) {
+      res$i = select_i(df=df,subset)
+  }
+  if (!missing(variable)) {
+      res$j = select_j(df=df,variable)
+  }
+  return(res)
 }
 
 select_i <- function(df,subset) {
