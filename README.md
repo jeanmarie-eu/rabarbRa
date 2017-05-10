@@ -57,6 +57,9 @@ dim(ci)
 #############
 # SELECTION #
 #############
+
+# rem: a selection is only valid for one action
+
 select(ci,~gender=="A",~Churn)
 ci[]
 
@@ -75,7 +78,7 @@ ci[]
 select(ci, variable=~-(gender:tenure))
 ci[]
 
-select(ci, subset= ~ gender=="A" & InternetService == "No",variable=~-(gender:tenure))
+select(ci, subset= ~ gender=="A" & InternetService == "No", variable=~-(gender:tenure))
 ci[]
 
 ##############
