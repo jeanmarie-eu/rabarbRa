@@ -1,34 +1,18 @@
-#' select_var
+#' select
 #'
-#' select_var
+#' select
 #' @param x rabarbRa object
-#' @param variable parameters regarding the selection method
+#' @param subset logical expression indicating elements or rows to keep: missing values are taken as false
+#' @param variable expression, indicating variables to select.
 #' @keywords rabarbRa
 #' @export
 #' @examples
 #' \dontrun{
-#' select_var()
+#' select()
 #' }
-select_var <- function(x,variable){
+select <- function(x,subset,variable){
   if(inherits(x,"rabarbRa")){
-    x$select(variable=variable)
-  } else stop("Need to be a rabarbRa object")
-}
-
-#' select_row
-#'
-#' select_row
-#' @param x rabarbRa object
-#' @param query parameters regarding the selection method
-#' @keywords rabarbRa
-#' @export
-#' @examples
-#' \dontrun{
-#' select_row()
-#' }
-select_row <- function(x,query){
-  if(inherits(x,"rabarbRa")){
-    x$select(query=query)
+    x$select(subset,variable)
   } else stop("Need to be a rabarbRa object")
 }
 
@@ -39,6 +23,40 @@ select_row <- function(x,query){
 # This has been built to get a first algorithm architecture
 # The process/algorithm/code language might be adapted soon.
 # Objectives: low RAM, fast computing
+
+select_ <- function(df,subset,variable){
+  return(list(i = select_i(df=df,subset),
+              j = select_j(df=df,variable)))
+}
+
+select_i <- function(df,subset) {
+  if (missing(subset)) {
+      i_bool <- NULL #rep_len(TRUE, nrow(df))
+  } else {
+      e <- as.lazy(subset)
+      i_bool <- eval(e$expr, df)
+      if (!is.logical(i_bool)) stop("'subset' must be logical")
+      i_bool <- (i_bool & !is.na(i_bool))
+  }
+  return(which(i_bool))
+}
+
+select_j <- function(df,variable=NULL) {
+   if (missing(variable)) {
+        j<-NULL
+   } else {
+        tmp <- as.list(seq_along(df))
+        names(tmp) <- names(df)
+        e <- as.lazy(variable)
+        j <- eval(e$expr, tmp)
+   }
+   return(j)
+}
+
+
+#############
+# OBSOLETE  #
+#############
 select_var_ <- function(df,variable){
   if (length(variable)==1){
      return(which((names(df) == variable)) )

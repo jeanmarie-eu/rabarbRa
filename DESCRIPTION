@@ -5,17 +5,16 @@ Authors@R: person("Jean-Marie", "Lepioufle", , "jm@nexmodeling.com", c("aut","cr
            person("nexModeling", role = "cph"))
 Title: rabarbRa
 Description: Quickly manipulate data.frame and related files (json, csv, ...).
-   The package focuses on:
-   1. Easily and quickly manipulate data.frames and related files.
-   2. Identify processes that are memory and cpu eaters for further improvements.
-   3. Developing solution to 2.
+    The package focuses on: 1. Easily and quickly manipulate data.frames and
+    related files. 2. Identify processes that are memory and cpu eaters for further
+    improvements. 3. Developing solution to 2.
 Depends:
     R (>= 3.2.5)
 Imports:
-   tools,
-   jsonlite,
-   lazyeval,
-   curl
+    tools,
+    jsonlite,
+    lazyeval,
+    curl
 License: GPL-3
 Encoding: UTF-8
 LazyData: false

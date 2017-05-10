@@ -60,24 +60,10 @@ rabarbRa_object <- function(df,filename,url){
       return(indice_select)
     }
 
-    select <- function(query=NULL,variable=NULL) {
-      if (!is.null(query)){
-         indice_select$i <<- select_row_(df=df_rab,query)
-      }
-      if (!is.null(variable)){
-         indice_select$j <<- select_var_(df_rab,variable)
-      }
-      if (identical(indice_select$i,integer(0)) ) {
-        indice_select$i <<- NULL
-        message("query provided integer(0), kept to NULL")
-      }
-      if (identical(indice_select$j,integer(0)) ) {
-        indice_select$j <<- NULL
-        message("variables provided integer(0), kept to NULL")
-      }
+    select <- function(subset,variable) {
+      indice_select <<- select_(df=df_rab,subset,variable)
       invisible()
     }
-
 
     values <- function(i=NULL,j=NULL) {
       on.exit(indice_select <<- list(i=NULL,j=NULL))
