@@ -1,34 +1,18 @@
-#' select_var
+#' select
 #'
-#' select_var
+#' select
 #' @param x rabarbRa object
-#' @param variable parameters regarding the selection method
+#' @param subset logical expression indicating elements or rows to keep: missing values are taken as false
+#' @param variable expression, indicating variables to select.
 #' @keywords rabarbRa
 #' @export
 #' @examples
 #' \dontrun{
-#' select_var()
+#' select()
 #' }
-select_var <- function(x,variable){
+select <- function(x,subset,variable){
   if(inherits(x,"rabarbRa")){
-    x$select(variable=variable)
-  } else stop("Need to be a rabarbRa object")
-}
-
-#' select_row
-#'
-#' select_row
-#' @param x rabarbRa object
-#' @param query parameters regarding the selection method
-#' @keywords rabarbRa
-#' @export
-#' @examples
-#' \dontrun{
-#' select_row()
-#' }
-select_row <- function(x,query){
-  if(inherits(x,"rabarbRa")){
-    x$select(query=query)
+    x$select(subset=subset,variable=variable)
   } else stop("Need to be a rabarbRa object")
 }
 
@@ -39,42 +23,41 @@ select_row <- function(x,query){
 # This has been built to get a first algorithm architecture
 # The process/algorithm/code language might be adapted soon.
 # Objectives: low RAM, fast computing
-select_var_ <- function(df,variable){
-  if (length(variable)==1){
-     return(which((names(df) == variable)) )
-  } else if (length(variable)>1){
-     return(unlist(lapply(variable,function(x) which(names(df) == x))))
-  } else stop("variable required")
-}
 
-select_row_ <- function(df,query){
-  stopifnot(inherits(query,"queries"))
-  if(length(query$q)==1){
-    tmp <- lapply(query$q,select_one,df=df)
-    return(which(tmp[[1]]))
-  } else if(length(query$q)>1){
-    tmp <- lapply(query$q,select_one,df=df)
-    return(which(do.call(query$logic,args=list(tmp))))
-  } else stop("query object required")
-}
-
-select_one <-function(req,df){
-  FUN <- get(q_fun_sign(req))
-  res <- FUN(df[[q_variable(req)]],q_value(req))
+select_ <- function(df,subset,variable){
+  res <-list(i=NULL,j=NULL)
+  if (!missing(subset)) {
+      res$i = select_i(df=df,subset)
+  }
+  if (!missing(variable)) {
+      res$j = select_j(df=df,variable)
+  }
   return(res)
 }
 
-AND <- function(...){
-  return(elogic("&&",...))
-}
-
-OR <- function(...){
-  return(elogic("||",...))
-}
-
-elogic <- function(logic,...) {
-  FUN <- function(...){
-     return(mapply(logic, ...))
+select_i <- function(df,subset) {
+  if (missing(subset)) {
+      i_bool <- rep_len(TRUE, nrow(df))
+  } else {
+      e <- as.lazy(subset)
+      row <- eval(e$expr, df)
+      if (is.logical(row)) {
+        row <- (row & !is.na(row))
+        return(which(row))
+      } else if(is.integer(row)){
+        return(row)
+      } else stop("'subset' must be either logical or integer")
   }
-  return(do.call("FUN",args=...))
+}
+
+select_j <- function(df,variable=NULL) {
+   if (missing(variable)) {
+        j<-TRUE
+   } else {
+        tmp <- as.list(seq_along(df))
+        names(tmp) <- names(df)
+        e <- as.lazy(variable)
+        j <- eval(e$expr, tmp)
+   }
+   return(j)
 }

@@ -58,19 +58,27 @@ dim(ci)
 # SELECTION #
 #############
 
-# variable selection
-# the selection is reset after every action (get values, process formula, ...etc)
-select_var(ci,"tenure")
+# rem: a selection is only valid for one action
+
+select(ci,~gender=="A",~Churn)
 ci[]
 
-select_var(ci,c("tenure","Contract"))
-ci[1:10]
+select(ci,variable=~Churn)
+ci[]
 
-# row selection
-req <- query(variable="InternetService",fun_sign="==",value="No")
-q <- queries(req)
-select_row(ci,q)
-select_var(ci,"tenure")
+select(ci,subset=~gender=="A")
+ci[,1:3]
+
+select(ci,variable = ~c(tenure,Contract))
+ci[1:10,]
+
+select(ci, ~InternetService == "No",~-tenure)
+ci[]
+
+select(ci, variable=~-(gender:tenure))
+ci[]
+
+select(ci, subset= ~ gender=="A" & InternetService == "No", variable=~-(gender:tenure))
 ci[]
 
 ##############
