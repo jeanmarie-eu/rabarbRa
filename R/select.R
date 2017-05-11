@@ -39,8 +39,7 @@ select_i <- function(df,subset) {
   if (missing(subset)) {
       i_bool <- rep_len(TRUE, nrow(df))
   } else {
-      e <- as.lazy(subset)
-      row <- eval(e$expr, df)
+      row <- f_eval(subset, df)
       if (is.logical(row)) {
         row <- (row & !is.na(row))
         return(which(row))
