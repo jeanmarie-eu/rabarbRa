@@ -37,19 +37,22 @@ select_ <- function(df,subset,variable){
 
 select_i <- function(df,subset) {
   if (missing(subset)) {
-      i_bool <- NULL #rep_len(TRUE, nrow(df))
+      i_bool <- rep_len(TRUE, nrow(df))
   } else {
       e <- as.lazy(subset)
-      i_bool <- eval(e$expr, df)
-      if (!is.logical(i_bool)) stop("'subset' must be logical")
-      i_bool <- (i_bool & !is.na(i_bool))
+      row <- eval(e$expr, df)
+      if (is.logical(row)) {
+        row <- (row & !is.na(row))
+        return(which(row))
+      } else if(is.integer(row)){
+        return(row)
+      } else stop("'subset' must be either logical or integer")
   }
-  return(which(i_bool))
 }
 
 select_j <- function(df,variable=NULL) {
    if (missing(variable)) {
-        j<-NULL
+        j<-TRUE
    } else {
         tmp <- as.list(seq_along(df))
         names(tmp) <- names(df)
@@ -57,48 +60,4 @@ select_j <- function(df,variable=NULL) {
         j <- eval(e$expr, tmp)
    }
    return(j)
-}
-
-
-#############
-# OBSOLETE  #
-#############
-select_var_ <- function(df,variable){
-  if (length(variable)==1){
-     return(which((names(df) == variable)) )
-  } else if (length(variable)>1){
-     return(unlist(lapply(variable,function(x) which(names(df) == x))))
-  } else stop("variable required")
-}
-
-select_row_ <- function(df,query){
-  stopifnot(inherits(query,"queries"))
-  if(length(query$q)==1){
-    tmp <- lapply(query$q,select_one,df=df)
-    return(which(tmp[[1]]))
-  } else if(length(query$q)>1){
-    tmp <- lapply(query$q,select_one,df=df)
-    return(which(do.call(query$logic,args=list(tmp))))
-  } else stop("query object required")
-}
-
-select_one <-function(req,df){
-  FUN <- get(q_fun_sign(req))
-  res <- FUN(df[[q_variable(req)]],q_value(req))
-  return(res)
-}
-
-AND <- function(...){
-  return(elogic("&&",...))
-}
-
-OR <- function(...){
-  return(elogic("||",...))
-}
-
-elogic <- function(logic,...) {
-  FUN <- function(...){
-     return(mapply(logic, ...))
-  }
-  return(do.call("FUN",args=...))
 }

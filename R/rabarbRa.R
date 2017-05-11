@@ -41,11 +41,8 @@ rabarbRa_object <- function(df,filename,url){
     }
 
     summary <- function(){
-        return(
-          list(colname = names(df_rab),
-               dim     = dim(df_rab)))
+        return(list(colname = names(df_rab),dim = dim(df_rab)))
     }
-
 
     #######################
     # Values Manipulation #
@@ -61,7 +58,7 @@ rabarbRa_object <- function(df,filename,url){
     }
 
     select <- function(subset,variable) {
-      indice_select <<- select_(df=df_rab,subset,variable)
+      indice_select <<- select_(df=df_rab,subset=subset,variable=variable)
       invisible()
     }
 
