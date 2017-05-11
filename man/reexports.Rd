@@ -3,6 +3,7 @@
 \docType{import}
 \name{reexports}
 \alias{as.lazy}
+\alias{f_eval}
 \alias{reexports}
 \title{Objects exported from other packages}
 \description{
@@ -10,7 +11,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{lazyeval}{\code{\link[lazyeval]{as.lazy}}}
+  \item{lazyeval}{\code{\link[lazyeval]{as.lazy}}, \code{\link[lazyeval]{f_eval}}}
 }}
 \keyword{internal}
 
