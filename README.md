@@ -1,6 +1,6 @@
 # rabarbRa
 
-[![Travis-CI Build Status](https://travis-ci.org/jeanmarielepioufle/rabarbRa.svg?branch=master)](https://travis-ci.org/jeanmarielepioufle/rabarbRa)
+[![Travis-CI Build Status](https://travis-ci.org/jeanmarie-eu/rabarbRa.svg?branch=master)](https://travis-ci.org/jeanmarie-eu/rabarbRa)
 
 The R-package gathers functions and a object to quickly manipulate data.frame and related files (json,...).
 
@@ -15,7 +15,7 @@ The package is under active development. Its code and syntax might change greatl
 
 ```R
 # install.packages("devtools")
-devtools::install_github("jeanmarielepioufle/rabarbRa")
+devtools::install_github("jeanmarie-eu/rabarbRa")
 ```
 
 ## Usage
