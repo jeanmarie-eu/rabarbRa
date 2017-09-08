@@ -9,7 +9,7 @@ Description: Quickly manipulate data.frame and related files (json, csv, ...).
     2. Identify processes that are memory and cpu eaters for further improvements.
     3. Developing solution to 2.
 Depends:
-    R (>= 3.2.5)
+    R (>= 3.2.0)
 Imports:
     tools,
     jsonlite,
